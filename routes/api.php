@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('zip-codes')->name('api.zip-codes.')->group( function () {
+    Route::get('/{zip_code}',[ \App\Http\Controllers\ZipCodes::class, 'show' ])->name('show');
+});
