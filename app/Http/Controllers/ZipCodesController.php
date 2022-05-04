@@ -11,7 +11,7 @@ class ZipCodesController extends Controller
         try {
 
             //Get data in the JSON fil
-            $zip_codes   = json_decode( file_get_contents( storage_path()."\app\public\json\zip_codes.json" ), true );
+            $zip_codes   = json_decode( file_get_contents( public_path()."\storage\json\zip_codes.json" ), true );
             $zip_codes   = array_filter($zip_codes);
             $data        = collect( $zip_codes )->where( "d_codigo", "=", "$zip_code" )->values( )->all( );
             $settlements = array();
