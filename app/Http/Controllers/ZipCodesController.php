@@ -10,7 +10,7 @@ class ZipCodesController extends Controller
 
         try {
 
-            return public_path()."\json\zip_codes.json" ;
+            return base_path()."\json\zip_codes.json" ;
             //Get data in the JSON fil
             $zip_codes   = json_decode( file_get_contents( public_path()."\json\zip_codes.json" ), true );
             $zip_codes   = array_filter($zip_codes);
