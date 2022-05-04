@@ -20,7 +20,7 @@ class ZipCodesController extends Controller
             foreach( $data as $d ){
                 $settlement = array(
                     "key"             => intval( $d['id_asenta_cpcons'] ),
-                    "name"            => strtoupper( $d['d_asenta'] ),
+                    "name"            => self::format($d['d_asenta']),
                     "zone_type"       => strtoupper( $d['d_zona'] ),
                     "settlement_type" => array(
                         "name" => $d[ 'd_tipo_asenta' ],
@@ -29,31 +29,20 @@ class ZipCodesController extends Controller
                 array_push( $settlements, $settlement );
             }
 
-            //Special characters
-            $table = array(
-                'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
-                'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
-                'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
-                'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
-                'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
-                'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
-                'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b',
-                'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r',
-            );
 
             //Response body
             $response = array(
                 "zip_code"       => $data[ 0 ][ 'd_codigo' ] ?? '',
-                "locality"       => strtoupper( strtr( $data[ 0 ][ 'd_ciudad' ], $table ) ) ?? '',
+                "locality"       => self::format( $data[ 0 ][ 'd_ciudad' ] ) ?? '',
                 "federal_entity" => array(
                     "key"  => intval( $data[ 0 ][ 'c_estado' ] ) ?? '',
-                    "name" => strtoupper( strtr( $data[ 0 ][ 'd_estado' ], $table ) ) ?? '',
+                    "name" => self::format( $data[ 0 ][ 'd_estado' ] ) ?? '',
                     "code" => null
                 ),
                 "settlements"  => $settlements,
                 "municipality" => array(
                     "key"  => intval( $data[ 0 ][ 'c_mnpio' ] ) ?? '',
-                    "name" => strtoupper( strtr( $data[ 0 ][ 'D_mnpio' ], $table ) ) ?? ''
+                    "name" => self::format( $data[ 0 ][ 'D_mnpio' ] ) ?? ''
                 ),
             );
 
@@ -65,5 +54,22 @@ class ZipCodesController extends Controller
             return response( )->json( array( 'code'=>$e->getCode(), 'data'=>$e->getMessage() ),400 );
 
         }
+    }
+
+
+    private function format ( $words ) {
+        //Special characters
+        $table = array(
+            'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
+            'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
+            'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
+            'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
+            'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
+            'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
+            'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b',
+            'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r',
+        );
+
+        return strtoupper( strtr( $words, $table ) );
     }
 }
